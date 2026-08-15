@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JQuestions</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <header>
+      <h1>JQuestions</h1>
+      <p>A google forms cheap copy</p>
+      <hr>
+    </header>
+    <main>
+      <h2 id="title"></h2>
+      <div id="output"></div>
+      <div class="bottonContainer">
+        <br>
+        <button id="checkButton">Check Answers</button> 
+      </div>
+    </main>
+    <footer>&copy 2025 All rights recived</footer>
+    <script>
+      let questions;
+
+      window.onload = () => {
+        console.log(location.pathname);
+        let arr = location.pathname.split("/");
+        console.log(arr);
+        if(arr[1] == "Share") {
+          getSurvey(arr[2]);
+          return;
+        }
+          
+        questions = JSON.parse(sessionStorage.getItem("quizQuestions") || []);
+        printQuestion();
+      }
+
+      document.getElementById("checkButton").onclick = checkAnswers;
+
+      function printQuestion() {
+        document.getElementById("title").textContent = questions[0].title;
+        
+
+        questions[1].forEach((question, index) => {
+          let content = `<p>${question.question}</p>`;
+
+          for(let i = 0; i < 4; i++) {
+            content += `<input type="radio" id="id${index}${i}" name="${index}">
+                        <label for="id${index}${i}" id="label${index}${i}">${question.options[i]}</label><br>`
+          }
+          content += `<br><hr>`
+          document.getElementById("output").innerHTML += content;
+          }); 
+      }
+
+      function checkAnswers(){
+        questions[1].forEach((question, index) => {
+            document.getElementById(`label${index}${question.correctOption}`).style.color = "blue";
+        });
+      }
+
+      async function getSurvey(title) {
+        console.log("getSurvey called", title);
+        const response = await fetch(`/Question/${title}`);
+        questions = await response.json();
+        printQuestion();
+        console.log(questions);
+      }
+    </script>
+  </body>
+</html>

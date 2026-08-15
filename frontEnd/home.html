@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JQuestions</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <header>
+      <div class="header-contents">
+        <div class="title">
+          <h1>JQuestions</h1>
+          <p>A google forms cheap copy</p>
+        </div>
+          <button class="topButn" onclick="window.location.href='AddSurvey'">Add Survey</button>
+      </div>
+      <hr>
+      <br>
+    </header>
+    <main>
+        <h2>All surveys:</h2><hr>
+        <div id="surveyList"></div>
+    </main>
+    <footer>&copy 2025 All rights recived</footer>
+    <script>
+        let surveyList = [];
+        let content = "";
+        let ip;
+
+        fetchSurveyList();
+
+        async function fetchSurveyList() {
+            const response = await fetch("/Test");
+            surveyList = await response.json();
+            console.log(surveyList); 
+            printSurveyList();     
+        }
+        
+        function printSurveyList() {
+            surveyList.forEach((title, i) => {
+                content += `<div class="header-contents">
+                                <div class="title">
+                                    <p>${i+1}. ${title}</p>
+                                </div>
+                                <div class="actions">
+                                    <button class="iconBtn" onclick="viewSurvey(${i})"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                                    <button class="iconBtn" onclick="deleteSurvey(${i})"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                    <button class="iconBtn" onclick="shareSurvey(${i})"><i class="fa fa-share-alt" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                            <a href="link${i}"  id="link${i}" class="link"></a>
+                            <hr>`;          
+            });
+            document.getElementById("surveyList").innerHTML += content;
+        }
+
+        async function viewSurvey(index) {
+            // try {
+            // const response = fetch(`/Question/${surveyList[index]}`);
+            // let requestedQuestions = await response.text();
+            // console.log(requestedQuestions);
+            // } catch(error) {
+            //     console.log(error)
+            // }
+            console.log("view called by", surveyList[index]);
+            const response = await fetch(`/Question/${surveyList[index]}`);
+            let requestedSurvey = await response.json();
+            console.log(requestedSurvey);
+
+            sessionStorage.clear();
+            sessionStorage.setItem("quizQuestions", JSON.stringify(requestedSurvey));
+            window.location.href="ViewSurvey"; 
+        }
+
+        function deleteSurvey(index) {
+            console.log("delete called by", index); 
+        }
+
+        function shareSurvey(index) {
+            if(ip == undefined) {
+                getIp(index);
+                return;
+            }
+            let n = surveyList.length;
+            let linkSpace = document.getElementById(`link${index}`);
+
+            if(linkSpace.style.display == "block") {
+                linkSpace.style.display = "none";
+                return;
+            }
+
+            for(let i = 0; i < n; i++) {
+                document.getElementById(`link${i}`).style.display = "none";
+            }
+
+            let title = encodeURIComponent(surveyList[index]);
+            
+            linkSpace.textContent = `http://${ip}:8080/Share/${title}`;
+            linkSpace.href = `/Share/${title}`;
+            linkSpace.style.display = "block";
+        }
+
+        async function getIp(index) {
+            const response = await fetch("/getIp");
+            ip = await response.text();
+            console.log(ip); 
+            shareSurvey(index); 
+        }
+    </script>
+  </body>
+</html>

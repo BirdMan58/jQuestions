@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create qestions</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header>
+      <div class="header-contents">
+        <div class="title">
+          <h1>JQuestions</h1>
+          <p>A google forms cheap copy</p>
+        </div>
+          <button class="topButn" onclick="window.location.href='/'">Home</button>
+      </div>
+      <hr>
+      <br>
+    </header>
+    <main>
+      <input type="text" placeholder="Survey name" id="titleBox"><br><br>
+      <input type="text" placeholder="Question" id="questionBox"><br><br>
+
+      <input type="radio" id="option1" name="options" class="options">
+      <input type="text" placeholder="Option 1" id="optionText1"><br>
+
+      <input type="radio" id="option2" name="options" class="options">
+      <input type="text" placeholder="Option 2" id="optionText2"><br>
+
+      <input type="radio" id="option3" name="options" class="options">
+      <input type="text" placeholder="Option 3" id="optionText3"><br>
+
+      <input type="radio" id="option4" name="options" class="options">
+      <input type="text" placeholder="Option 4" id="optionText4"><br>
+      <div class="bottonContainer">
+        <br>
+        <button id="addButton">Add</button> 
+        <button id="saveButton">Save</button>
+      </div>
+      <br><hr>
+      <div id="questionThumb"></div>
+    </main>
+    <footer>&copy 2025 All rights recived</footer>
+    <script>
+      let questions = [];
+      let content = "";
+      let qnNo = 0;
+
+      document.getElementById("addButton").onclick = addQuestion;
+      document.getElementById("saveButton").onclick = saveFunction;
+
+      function addQuestion() {
+          let questionTemp = {
+              question:document.getElementById("questionBox").value,
+              options:[
+                  document.getElementById("optionText1").value,
+                  document.getElementById("optionText2").value,
+                  document.getElementById("optionText3").value,
+                  document.getElementById("optionText4").value,
+              ],
+              correctOption:0
+          };
+          for(let i = 2; i < 5; i++) {      
+              if(document.getElementById(`option${i}`).checked) {
+                  questionTemp.correctOption = i - 1;
+                  break;
+              }
+          }
+          questions.push(questionTemp);
+          updateThumb(questionTemp.question);
+
+          document.getElementById("questionBox").value = "";
+          document.getElementById("optionText1").value = "";
+          document.getElementById("optionText2").value = "";
+          document.getElementById("optionText3").value = "";
+          document.getElementById("optionText4").value = "";
+
+          document.querySelectorAll('input[name="options"]').forEach(radio => {
+              radio.checked = false;
+          });
+      }
+
+      function updateThumb(question) {
+          qnNo++;
+          content += `<p>${qnNo}. ${question}</p>`;
+          document.getElementById("questionThumb").innerHTML = content;
+      }
+
+      function saveFunction() {
+          let finalQuestions = [];
+          finalQuestions[0] = {title:document.getElementById("titleBox").value};
+          finalQuestions[1] = questions;
+
+          sessionStorage.clear();
+          sessionStorage.setItem("quizQuestions", JSON.stringify(finalQuestions));
+          sendQuestions(finalQuestions);   
+      }
+
+      async function sendQuestions(questions) {
+        console.log("sendfunction called", questions);
+        
+        try {
+          const response = await fetch("/Test", {
+            method: "POST", 
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(questions)
+          });
+
+          const data = await response.text();
+          console.log(data);
+          window.location.href="ViewSurvey"; 
+        } catch(error) {
+          console.log(error);
+        }
+        
+      }
+    </script>
+  </body>
+</html>

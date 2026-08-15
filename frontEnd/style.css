@@ -1,0 +1,130 @@
+* {
+    font-family: 'Times New Roman', Times, serif;
+}
+body {
+    max-width: 800px;
+    margin: 10px auto;
+}
+header p {
+    margin-top: 0;
+}
+header h1 {
+    margin-bottom: 0;
+}
+footer {
+    text-align-last: center;
+    margin: 50px;
+}
+
+input[type=text],[type=password] {
+    padding: 10px;
+    font-size: large;
+}
+
+#questionBox {
+    width: 97%;
+}
+hr {
+    width: 100%;
+}
+.options {
+    margin-bottom: 25px;
+}
+
+button {
+    padding: 10px;
+    font-size: large;
+    border: none;
+    margin: 25px 5px 0 5px;
+    width: 50%;
+}
+
+.bottonContainer {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+.topButn {
+    padding: 10px;
+    font-size: large;
+    border: none;
+    margin: 25px 5px 0 5px;
+    width: 150px;
+}
+
+.header-contents {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#titleBox {
+    width: 97%;
+    font-size: x-large;
+    border: none;
+    outline: none;
+}
+
+#titleBox:focus {
+    border-bottom: 2px solid gray;
+}
+
+.login-container{
+    display: grid;
+    place-items: center;
+    margin: 0;
+}
+
+form {
+    border: 2px solid gray;
+    padding: 20px;
+}
+
+.form-butn {
+    width: 100%;
+    margin: auto;
+}
+
+.errorMessage {
+    text-align: center;
+    padding: 10px;
+    border-radius: 3px;
+    background-color: rgba(255, 84, 84, 0.26);
+}
+
+.errorMessage i {
+    padding-right: 10px;
+}
+
+.iconBtn {
+    width: 30px;
+    padding: 2px;
+    background-color: rgba(255, 0, 0, 0);
+}
+
+.iconBtn:hover {
+    /* background-color: rgb(227, 227, 227); */
+    font-size: smaller;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.link {
+    border: solid 2px grey;
+    background-color: rgb(221, 221, 221);
+    padding: 10px;
+    display: none;
+}
+
+
+
+@media screen and (max-width: 764px) {
+    body {
+        margin: 10px;
+    }
+}
